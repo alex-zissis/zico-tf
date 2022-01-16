@@ -32,10 +32,10 @@ data "terraform_remote_state" "zico_dev_main_tf" {
 module "express_app" {
   source = "../../../modules/container-application"
 
-  application_name            = "express-app"
-  application_dns_name        = "example.api.zico.dev"
-  application_hostnames       = ["example.api.zico.dev"]
-  alb_listener_rule_priority  = 155
+  application_name           = "express-app"
+  application_dns_name       = "example.api.zico.dev"
+  application_hostnames      = ["example.api.zico.dev"]
+  alb_listener_rule_priority = 155
   ecs_task_envrionment_variables = [{
     name  = "DOG",
     value = "royal"

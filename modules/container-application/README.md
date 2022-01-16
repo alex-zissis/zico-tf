@@ -41,11 +41,32 @@ _main.tf_
 module "my_containerised_app" {
   source = "<path-to-modules>/modules/container-application"
 
-  application_name            = "example-app"
-  application_dns_name        = "example.api.zico.dev"
-  application_hostnames       = ["example.api.zico.dev"]
-  alb_listener_rule_priority  = 155
-}
+  application_name           = "example-app"
+  application_dns_name       = "example.api.zico.dev"
+  application_hostnames      = ["example.api.zico.dev"]
+  alb_listener_rule_priority = 155
+
+  vpc_id                         = "vpc-02c26163b069b22ae"
+  ecs_cluster_id                 = "arn:aws:ecs:<region>:<account-id>:cluster/ecs-cluster-main"
+  ecs_service_execution_role_arn = "arn:aws:iam::<account-id>:role/ecs-agent"
+  alb_listener_arn               = "arn:aws:elasticloadbalancing:<region>:<account-id>:listener/app/zico-dev-alb/95e8654c9f9bb1cc/4dbbf91155efcb40"
+  ssl_certificate_name           = "*.api.zico.dev"
+  route_53_zone_id               = "Z02158791WBS3WE46AAY6"
+  alb_zone_id                    = "Z1GM3OXH4ZPM65"
+  alb_dns_name                   = "zico-dev-alb-431436678.ap-southeast-2.elb.amazonaws.com"
+  deployer_iam_user_policy       = "arn:aws:iam::<account-id>:policy/ecs-deployer"
+  ecs_task_envrionment_variables = [
+    {
+      name : "DOG",
+      value : "Royal"
+    }
+  ]
+  ecs_task_secrets = [
+    {
+      name : "PASSWORD",
+      valueFrom : "arn:aws:ssm:<region>:<account-id>:parameter/<path>/password"
+    }
+  ]
 ```
 
 `terraform init`
