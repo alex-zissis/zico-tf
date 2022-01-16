@@ -43,9 +43,9 @@ resource "aws_ecs_task_definition" "pro_golf_scores_api_td" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-            awslogs-group = "/zico/micro/pro-golf-scores-api",
-            awslogs-region = "ap-southeast-2",    
-            awslogs-stream-prefix = "logs"        
+          awslogs-group         = "/zico/micro/pro-golf-scores-api",
+          awslogs-region        = "ap-southeast-2",
+          awslogs-stream-prefix = "logs"
         }
       }
       secrets = [
@@ -70,12 +70,12 @@ resource "aws_kms_key" "logging_key" {
 }
 
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
-  name = "ecs-log-group"
+  name              = "ecs-log-group"
   retention_in_days = 7
 }
 
 resource "aws_cloudwatch_log_group" "pro_golf_scores_api_log" {
-  name = "/zico/micro/pro-golf-scores-api"
+  name              = "/zico/micro/pro-golf-scores-api"
   retention_in_days = 7
 }
 

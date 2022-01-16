@@ -1,3 +1,7 @@
+locals {
+  home_ip = "203.129.21.208/32"
+}
+
 resource "aws_vpc" "apse_2_main" {
   cidr_block       = "10.0.0.0/16"
   instance_tenancy = "default"
@@ -10,59 +14,27 @@ resource "aws_vpc" "apse_2_main" {
 resource "aws_security_group" "ecs_sg" {
   vpc_id = aws_vpc.apse_2_main.id
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["203.129.21.208/32"]
-  }
-
-  ingress {
-    from_port   = 3000
-    to_port     = 3000
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   tags = {
     Name = "ecs-sg"
   }
 }
 
-resource "aws_security_group" "alb_sg" {
-  vpc_id = aws_vpc.apse_2_main.id
+resource "aws_security_group_rule" "ssh_from_home" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = [local.home_ip]
+  security_group_id = aws_security_group.ecs_sg.id
+}
 
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "alb-sg"
-  }
+resource "aws_security_group_rule" "ecs_egress_to_internet" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.ecs_sg.id
 }
 
 resource "aws_security_group_rule" "ecs_epheremiral_to_alb" {
@@ -72,6 +44,42 @@ resource "aws_security_group_rule" "ecs_epheremiral_to_alb" {
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.alb_sg.id
   security_group_id        = aws_security_group.ecs_sg.id
+}
+
+resource "aws_security_group" "alb_sg" {
+  vpc_id = aws_vpc.apse_2_main.id
+
+  tags = {
+    Name = "alb-sg"
+  }
+}
+
+resource "aws_security_group_rule" "http_from_internet" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.alb_sg.id
+}
+
+resource "aws_security_group_rule" "https_from_internet" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.alb_sg.id
+}
+
+
+resource "aws_security_group_rule" "egress_to_internet" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.alb_sg.id
 }
 
 resource "aws_subnet" "apse_prod_2a" {
