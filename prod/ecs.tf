@@ -44,7 +44,8 @@ resource "aws_ecs_task_definition" "pro_golf_scores_api_td" {
         logDriver = "awslogs"
         options = {
             awslogs-group = "/zico/micro/pro-golf-scores-api",
-            awslogs-region = "ap-southeast-2",            
+            awslogs-region = "ap-southeast-2",    
+            awslogs-stream-prefix = "logs"        
         }
       }
       secrets = [
