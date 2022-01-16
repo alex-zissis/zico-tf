@@ -40,6 +40,13 @@ resource "aws_ecs_task_definition" "pro_golf_scores_api_td" {
       cpu       = 64
       memory    = 128
       essential = true
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+            awslogs-group = "/zico/micro/pro-golf-scores-api",
+            awslogs-region = "ap-southeast-2",            
+        }
+      }
       secrets = [
         {
           name      = "SPORTRADAR_API_KEY"
@@ -49,7 +56,7 @@ resource "aws_ecs_task_definition" "pro_golf_scores_api_td" {
       portMappings = [
         {
           containerPort = 3000
-          hostPort      = 3000
+          hostPort      = 0
         }
       ]
     }
@@ -63,6 +70,12 @@ resource "aws_kms_key" "logging_key" {
 
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
   name = "ecs-log-group"
+  retention_in_days = 7
+}
+
+resource "aws_cloudwatch_log_group" "pro_golf_scores_api_log" {
+  name = "/zico/micro/pro-golf-scores-api"
+  retention_in_days = 7
 }
 
 resource "aws_ecs_cluster" "ecs_cluster_main" {
@@ -92,8 +105,8 @@ resource "aws_ecs_service" "pro_golf_scores_api" {
   cluster                            = aws_ecs_cluster.ecs_cluster_main.id
   task_definition                    = aws_ecs_task_definition.pro_golf_scores_api_td.arn
   desired_count                      = 1
-  deployment_minimum_healthy_percent = 0
-  deployment_maximum_percent         = 100
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 200
   iam_role                           = aws_iam_role.ecs_agent.arn
   force_new_deployment               = true
 
