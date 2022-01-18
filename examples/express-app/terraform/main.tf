@@ -45,3 +45,12 @@ module "express_app" {
     valueFrom = "arn:aws:ssm:ap-southeast-2:921344595439:parameter/zico/micro/express-app/my-pass"
   }]
 }
+
+output "express_app_deployer_key" {
+  value = module.express_app.deployer_user_key
+}
+
+output "express_app_deployer_secret" {
+  value     = module.express_app.deployer_user_secret
+  sensitive = true
+}

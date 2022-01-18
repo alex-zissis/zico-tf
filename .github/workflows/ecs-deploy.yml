@@ -1,4 +1,4 @@
-name: Deploy to Amazon ECS
+name: Deploy example express-app to Amazon ECS
 
 on:
     push:
@@ -41,6 +41,7 @@ jobs:
                   # Build a docker container and
                   # push it to ECR so that it can
                   # be deployed to ECS.
+                  cd examples/express-app
                   docker build --build-arg COMMIT_SHA=$IMAGE_TAG -t $ECR_REGISTRY/$APPLICATION_NAME:$IMAGE_TAG -t $ECR_REGISTRY/$APPLICATION_NAME:latest .
                   docker push $ECR_REGISTRY/$APPLICATION_NAME --all-tags
                   echo "::set-output name=image::$ECR_REGISTRY/$APPLICATION_NAME:$IMAGE_TAG"
