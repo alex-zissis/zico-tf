@@ -1,0 +1,82 @@
+name: Deploy to Amazon ECS
+
+on:
+    push:
+        branches:
+            - master
+
+env:
+    AWS_REGION: ap-southeast-2
+    APPLICATION_NAME: express-app
+    ECS_CLUSTER: ecs-cluster-main
+
+jobs:
+    deploy:
+        name: Deploy
+        runs-on: ubuntu-latest
+        environment: production
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ env.AWS_REGION }}
+
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1
+
+            - name: Build, tag, and push image to Amazon ECR
+              id: build-image
+              env:
+                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                  IMAGE_TAG: ${{ github.sha }}
+              run: |
+                  echo $IMAGE_TAG
+                  # Build a docker container and
+                  # push it to ECR so that it can
+                  # be deployed to ECS.
+                  docker build --build-arg COMMIT_SHA=$IMAGE_TAG -t $ECR_REGISTRY/$APPLICATION_NAME:$IMAGE_TAG -t $ECR_REGISTRY/$APPLICATION_NAME:latest .
+                  docker push $ECR_REGISTRY/$APPLICATION_NAME --all-tags
+                  echo "::set-output name=image::$ECR_REGISTRY/$APPLICATION_NAME:$IMAGE_TAG"
+
+            - name: Update service
+              run: |
+                  aws --no-cli-pager ecs update-service --cluster $ECS_CLUSTER --service $APPLICATION_NAME --force-new-deployment
+                  echo "done"
+
+            - name: Healthcheck
+              env:
+                  SHA: ${{ github.sha }}
+              run: |
+                sleep 20
+                RESPONSE_SHA="null"
+                MAX_ATTEMPTS="20"
+                i=0
+                while [ "$RESPONSE_SHA" != "$SHA" ] && [[ "$i" -lt "$MAX_ATTEMPTS" ]]; do
+                  sleep 10
+                  RESPONSE_SHA=$(curl -s https://example.api.zico.dev/new | jq -r .SHA)
+                  i=$((i+1))
+                  echo "attempt $i: $RESPONSE_SHA == $SHA"
+                done
+
+                if [[ "$i" -eq "$MAX_ATTEMPTS" ]]; then
+                  echo "Fail: Could not complete healthcheck"
+                  exit 1
+                fi
+
+                echo "Success: SHA recieved - ${SHA}"
+
+            - name: Cleanup unused images
+              run: |
+                export AWS_PAGER=cat
+                arr=$(aws ecr describe-images --repository-name $APPLICATION_NAME --no-paginate | jq -r '.imageDetails |= sort_by(.imagePushedAt) | .imageDetails[0:-2] | .[].imageDigest')
+                toDelete=$(node -e "console.log(process.argv[1].split('\n').filter(x => x.trim() !== '').map(x => 'imageDigest=' + x).join(' '))" "${arr[*]}")
+                echo "deleting: $toDelete"
+                aws ecr --no-paginate batch-delete-image --repository-name $APPLICATION_NAME --image-ids $toDelete
+
