@@ -60,7 +60,7 @@ jobs:
                 i=0
                 while [ "$RESPONSE_SHA" != "$SHA" ] && [[ "$i" -lt "$MAX_ATTEMPTS" ]]; do
                   sleep 10
-                  RESPONSE_SHA=$(curl -s https://example.api.zico.dev/new | jq -r .SHA)
+                  RESPONSE_SHA=$(curl -s https://example.api.zico.dev/health | jq -r .SHA)
                   i=$((i+1))
                   echo "attempt $i: $RESPONSE_SHA == $SHA"
                 done

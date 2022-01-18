@@ -93,7 +93,6 @@ app.use(
 );
 
 app.get('/', (req, res) => res.json({message: 'Yo', pass: process.env.MY_PASS ?? 'no pass', dog: process.env.DOG ?? 'no dog'}));
-app.get('/health', (req, res) => res.status(200).send('👍'));
-app.get('/new', (req, res) => res.json({SHA: process.env.COMMIT_SHA, startTime}));
+app.get('/health', (req, res) => res.json({SHA: process.env.COMMIT_SHA, startTime}));
 
 app.listen(3000, () => winston.info({message: 'Listening on port 3000', port: 3000}));
