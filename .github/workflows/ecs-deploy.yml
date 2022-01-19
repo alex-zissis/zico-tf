@@ -8,7 +8,6 @@ jobs:
    deploy:
     uses: alex-zissis/workflows/.github/workflows/ecs-deploy.yml@develop
     with:
-      username: mona
       application-name: express-app
       ecs-cluster: ecs-cluster-main
       image-tag: ${{ github.sha }}
