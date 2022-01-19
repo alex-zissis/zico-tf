@@ -1,12 +1,12 @@
 name: Deploy example express-app to Amazon ECS
-#trigger
+
 on:
     push:
         branches:
-            - master
+            - develop
 jobs:
    deploy:
-    uses: alex-zissis/workflows/.github/workflows/ecs-deploy.yml@master
+    uses: alex-zissis/workflows/.github/workflows/ecs-deploy.yml@develop
     
     with:
       username: mona
