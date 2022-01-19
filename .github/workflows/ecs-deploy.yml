@@ -1,5 +1,5 @@
 name: Deploy example express-app to Amazon ECS
-
+#
 on:
     push:
         branches:
@@ -7,7 +7,6 @@ on:
 jobs:
    deploy:
     uses: alex-zissis/workflows/.github/workflows/ecs-deploy.yml@develop
-    
     with:
       username: mona
       application-name: express-app
