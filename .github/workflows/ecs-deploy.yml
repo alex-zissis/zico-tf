@@ -1,5 +1,4 @@
 name: Deploy example express-app to Amazon ECS
-
 on:
     push:
         branches:
