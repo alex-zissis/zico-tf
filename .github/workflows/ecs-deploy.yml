@@ -4,11 +4,11 @@ name: Deploy example express-app to Amazon ECS
 on:
     push:
         branches:
-            - develop
+            - master
 
 jobs:
    deploy:
-    uses: alex-zissis/workflows/.github/workflows/ecs-deploy.yml@develop
+    uses: alex-zissis/workflows/.github/workflows/ecs-deploy.yml@master
     with:
       application-name: express-app
       ecs-cluster: ecs-cluster-main
