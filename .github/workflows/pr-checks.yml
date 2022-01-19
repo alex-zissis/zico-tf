@@ -10,3 +10,4 @@ jobs:
       with:
         application-name: express-app
         run-tests: "0"
+        app-path: ./examples/express-app
