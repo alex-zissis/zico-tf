@@ -4,6 +4,7 @@ on:
     push:
         branches:
             - develop
+
 jobs:
    deploy:
     uses: alex-zissis/workflows/.github/workflows/ecs-deploy.yml@develop
