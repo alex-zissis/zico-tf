@@ -12,6 +12,7 @@ jobs:
       ecs-cluster: ecs-cluster-main
       image-tag: ${{ github.sha }}
       healthcheck-url: https://example.api.zico.dev/health
+      ecr-registry: 921344595439.dkr.ecr.ap-southeast-2.amazonaws.com
     secrets:
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
