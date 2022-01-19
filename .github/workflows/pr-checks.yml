@@ -6,7 +6,7 @@ on:
 
 jobs:
    build-and-test:
-      uses: alex-zissis/workflows/.github/workflows/build-and-test-container.yml@develop
+      uses: alex-zissis/workflows/.github/workflows/build-and-test-container.yml@master
       with:
         application-name: express-app
         run-tests: "0"
