@@ -1,16 +1,11 @@
 import express from 'express';
 import winston from 'winston';
 import expressWinston from 'express-winston';
-import WinstonCloudWatch from 'winston-cloudwatch';
+import WinstonCloudWatch from 'winston-cloudwatch-logs';
 import {format} from 'date-fns';
 import {v4 as uuidv4} from 'uuid';
 import crypto from 'crypto';
-import AWS from 'aws-sdk';
 const startTime = new Date();
-
-AWS.config.update({
-    region: process.env.AWS_REGION ?? 'ap-southeast-2',
-});
 
 const app = express();
 
@@ -48,6 +43,7 @@ app.use(
                               .update(startTime.toISOString())
                               .digest('hex')}`;
                       },
+                      awsRegion: 'ap-southeast-2',
                       jsonMessage: true,
                   })
                 : new winston.transports.Console(),
