@@ -134,10 +134,34 @@ resource "aws_route53_record" "mail" {
     records = ["203.129.21.208"]
 }
 
+resource "aws_route53_record" "nas" {
+    zone_id = aws_route53_zone.primary.zone_id
+    name    = "nas.zico.dev"
+    type    = "A"
+    ttl     = "300"
+    records = ["203.129.21.208"]
+}
+
+resource "aws_route53_record" "code" {
+    zone_id = aws_route53_zone.primary.zone_id
+    name    = "code.zico.dev"
+    type    = "A"
+    ttl     = "300"
+    records = ["203.129.21.208"]
+}
+
 resource "aws_route53_record" "mx" {
   zone_id = aws_route53_zone.primary.zone_id
   type    = "MX"
   ttl     = "300"
   name    = "zico.dev"
-  records = ["0 mail.postale.io"]
+  records = ["0 mail.zico.dev"]
+}
+
+resource "aws_route53_record" "homemail_dkim" {
+  zone_id = aws_route53_zone.primary.zone_id
+  type    = "TXT"
+  ttl     = "300"
+  name    = "homemail._domainkey.zico.dev"
+  records = ["k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCyNyEH1/D0jiCwHepZeMvxiwgRGpOLk45pXJ+mnsbbr9Q6WXORNFLyA9lHcgP/FNrFBFgJmAV34zqVAYCOdIpof3TwXoawTZwmaENxpIPxzb+qD2U4vT/V+fYNGovU5yANz4Oh0HJEMPPx6+uaHpS9fF8QGET25FKDV/YfvzhDNwIDAQAB"]
 }
