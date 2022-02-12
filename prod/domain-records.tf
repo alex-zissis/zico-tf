@@ -1,19 +1,3 @@
-resource "aws_route53_record" "autodiscover" {
-  zone_id = aws_route53_zone.primary.zone_id
-  name    = "autodiscover.zico.dev"
-  type    = "CNAME"
-  ttl     = "300"
-  records = ["mail.postale.io"]
-}
-
-resource "aws_route53_record" "autoconfig" {
-  zone_id = aws_route53_zone.primary.zone_id
-  name    = "autoconfig.zico.dev"
-  type    = "CNAME"
-  ttl     = "300"
-  records = ["mail.postale.io"]
-}
-
 resource "aws_route53_record" "shopify_ver" {
   zone_id = aws_route53_zone.primary.zone_id
   name    = "f72a9eab-455e-4323-99f4-9ab828b7f6cc.zico.dev"
@@ -164,4 +148,12 @@ resource "aws_route53_record" "homemail_dkim" {
   ttl     = "300"
   name    = "homemail._domainkey.zico.dev"
   records = ["k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCyNyEH1/D0jiCwHepZeMvxiwgRGpOLk45pXJ+mnsbbr9Q6WXORNFLyA9lHcgP/FNrFBFgJmAV34zqVAYCOdIpof3TwXoawTZwmaENxpIPxzb+qD2U4vT/V+fYNGovU5yANz4Oh0HJEMPPx6+uaHpS9fF8QGET25FKDV/YfvzhDNwIDAQAB"]
+}
+
+resource "aws_route53_record" "vpn" {
+    zone_id = aws_route53_zone.primary.zone_id
+    name    = "vpn.zico.dev"
+    type    = "A"
+    ttl     = "300"
+    records = ["203.129.21.208"]
 }
