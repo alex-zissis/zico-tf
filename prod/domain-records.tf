@@ -111,27 +111,27 @@ resource "aws_route53_record" "email_staging" {
 }
 
 resource "aws_route53_record" "mail" {
-    zone_id = aws_route53_zone.primary.zone_id
-    name    = "mail.zico.dev"
-    type    = "A"
-    ttl     = "300"
-    records = ["203.129.21.208"]
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "mail.zico.dev"
+  type    = "A"
+  ttl     = "300"
+  records = ["203.129.21.208"]
 }
 
 resource "aws_route53_record" "nas" {
-    zone_id = aws_route53_zone.primary.zone_id
-    name    = "nas.zico.dev"
-    type    = "A"
-    ttl     = "300"
-    records = ["203.129.21.208"]
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "nas.zico.dev"
+  type    = "A"
+  ttl     = "300"
+  records = ["203.129.21.208"]
 }
 
 resource "aws_route53_record" "files" {
-    zone_id = aws_route53_zone.primary.zone_id
-    name    = "files.zico.dev"
-    type    = "CNAME"
-    ttl     = "300"
-    records = ["nas.zico.dev"]
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "files.zico.dev"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["nas.zico.dev"]
 }
 
 # resource "aws_route53_record" "code" {
@@ -159,14 +159,12 @@ resource "aws_route53_record" "homemail_dkim" {
 }
 
 resource "aws_route53_record" "vpn" {
-    zone_id = aws_route53_zone.primary.zone_id
-    name    = "vpn.zico.dev"
-    type    = "A"
-    ttl     = "300"
-    records = ["203.129.21.208"]
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "vpn.zico.dev"
+  type    = "A"
+  ttl     = "300"
+  records = ["203.129.21.208"]
 }
-
-
 
 
 resource "aws_route53_record" "dev1_spf" {
@@ -249,4 +247,12 @@ resource "aws_route53_record" "mx_dev3" {
   type    = "MX"
   ttl     = "300"
   records = ["10 mxa.mailgun.org", "10 mxb.mailgun.org"]
+}
+
+resource "aws_route53_record" "google_site_verification" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "3fav7mcj2xog.zico.dev"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["gv-exbqoggq2y6qty.dv.googlehosted.com"]
 }
