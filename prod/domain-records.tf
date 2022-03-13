@@ -126,13 +126,21 @@ resource "aws_route53_record" "nas" {
     records = ["203.129.21.208"]
 }
 
-resource "aws_route53_record" "code" {
+resource "aws_route53_record" "files" {
     zone_id = aws_route53_zone.primary.zone_id
-    name    = "code.zico.dev"
-    type    = "A"
+    name    = "files.zico.dev"
+    type    = "CNAME"
     ttl     = "300"
-    records = ["203.129.21.208"]
+    records = ["nas.zico.dev"]
 }
+
+# resource "aws_route53_record" "code" {
+#     zone_id = aws_route53_zone.primary.zone_id
+#     name    = "code.zico.dev"
+#     type    = "A"
+#     ttl     = "300"
+#     records = ["203.129.21.208"]
+# }
 
 resource "aws_route53_record" "mx" {
   zone_id = aws_route53_zone.primary.zone_id
@@ -156,4 +164,89 @@ resource "aws_route53_record" "vpn" {
     type    = "A"
     ttl     = "300"
     records = ["203.129.21.208"]
+}
+
+
+
+
+resource "aws_route53_record" "dev1_spf" {
+  zone_id = aws_route53_zone.primary.zone_id
+  type    = "TXT"
+  ttl     = "300"
+  name    = "dev-1.zico.dev"
+  records = ["v=spf1 include:mailgun.org ~all"]
+}
+
+resource "aws_route53_record" "dev1_domainkey" {
+  zone_id = aws_route53_zone.primary.zone_id
+  type    = "TXT"
+  ttl     = "300"
+  name    = "pic._domainkey.dev-1.zico.dev"
+  records = ["k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3/WLhwkidhYRVd7jNTEq5UIsg1RXfYslAcgbsnGzGiBXNWtOsffXcKXsvCNkPAMI4t/yruSlYgiYjep4kEqYTung5tb5XJtDfQM4Gc7hh/lqX1dRim8muD1ERdVNWOtzgNz/xerljknJCdc6hQsOifyOg+r1kL9wfJv6Q6BA/nQIDAQAB"]
+}
+
+resource "aws_route53_record" "email_dev1" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "email.dev-1.zico.dev"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["mailgun.org"]
+}
+
+
+
+resource "aws_route53_record" "staging1_spf" {
+  zone_id = aws_route53_zone.primary.zone_id
+  type    = "TXT"
+  ttl     = "300"
+  name    = "staging-1.zico.dev"
+  records = ["v=spf1 include:mailgun.org ~all"]
+}
+
+resource "aws_route53_record" "staging1_domainkey" {
+  zone_id = aws_route53_zone.primary.zone_id
+  type    = "TXT"
+  ttl     = "300"
+  name    = "mx._domainkey.staging-1.zico.dev"
+  records = ["k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLazTpGPW7AzqhNN0K9a3A+2O7EgnTEhu/IRdxHDbvqTCqX16iMzq05pDFxU+g/S6g20IJDoDJy+0BKCgLsVRnRME2yn7ZE7TOnVdFaa/P+8C6LKajeAr3Grg4SvMctxVXAN+t6oOyxPwK5b8g9+/k0LVzamEy1J9HZRSjh4063wIDAQAB"]
+}
+
+resource "aws_route53_record" "staging1_dev1" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "email.staging-1.zico.dev"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["mailgun.org"]
+}
+
+resource "aws_route53_record" "dev3_spf" {
+  zone_id = aws_route53_zone.primary.zone_id
+  type    = "TXT"
+  ttl     = "300"
+  name    = "dev-3.zico.dev"
+  records = ["v=spf1 include:mailgun.org ~all"]
+}
+
+resource "aws_route53_record" "dev3_domainkey" {
+  zone_id = aws_route53_zone.primary.zone_id
+  type    = "TXT"
+  ttl     = "300"
+  name    = "pic._domainkey.dev-3.zico.dev"
+  records = ["k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCi7Gy2UueODj3TI/bS3hikKC8dYFWGxxWwYA/CltwM24NEWx/clCzRtSic54CXiXdBqytrVwNDvICi6g02Tt51gnnagxjUjuzE0PSlldewriTXLRo9fvXzyqbwsWKlMpjWBnOTV1cVToucF9iWYxAhK7ysum6w8WGbaOgs+ldvUwIDAQAB"]
+}
+
+resource "aws_route53_record" "email_dev3" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "email.dev-3.zico.dev"
+  type    = "CNAME"
+  ttl     = "300"
+  records = ["mailgun.org"]
+}
+
+resource "aws_route53_record" "mx_dev3" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "dev-3.zico.dev"
+  type    = "MX"
+  ttl     = "300"
+  records = ["10 mxa.mailgun.org", "10 mxb.mailgun.org"]
 }

@@ -16,7 +16,6 @@ terraform {
 }
 
 provider "aws" {
-  profile = "tf"
   region  = "ap-southeast-2"
 }
 
